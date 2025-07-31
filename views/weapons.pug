@@ -1,6 +1,6 @@
 doctype html
 html 
-    head 
+    head  
         title= `${title}`
         meta(name="viewport" content="width=device-width, initial-scale=1")
         link(rel="stylesheet", href="/css/style.css")
@@ -16,4 +16,4 @@ html
                         p.card__email #{weapon.properties.use_description}
         else
             p No weapons found. Waiting for weapons you can use our new one. The "daisy", to use it, give it to your opponent, it may stun him so you can make your declaration. Good luck. If you already used it on someone, you can still use it again, it will up its affection bar (except if he's allergic to flowers...).
-        a(href='/update-cobj')= weapon ? "Update Weapon" : "Add Weapon"
+        a(href=`/updates`)= "Add Weapon"

@@ -46,6 +46,7 @@ app.get('/updates', (req, res) => {
 
 app.get('/updates/:id', async (req, res) => {
   const weaponId = req.params.id;
+  console.log(weaponId);
   const url = `https://api.hubapi.com/crm/v3/objects/2-145281523/${weaponId}?properties=name&properties=price&properties=use_description`;
   const headers = {
     Authorization: `Bearer ${PRIVATE_APP_ACCESS}`,
@@ -68,22 +69,12 @@ app.get('/updates/:id', async (req, res) => {
   }
 });
 
-
-// ___________________________________________________________________________________________________________________________________ //
-//              v   v   v   v   v   v   v   v                                       v   v   v   v   v   v   v   v
-//      --->                                      HERE I AM, WORK IN PROGRESS !                                      <---
-//              ^   ^   ^   ^   ^   ^   ^   ^                                       ^   ^   ^   ^   ^   ^   ^   ^
-// ___________________________________________________________________________________________________________________________________ //
-
-
-
-// TODO: ROUTE 3 - Create a new app.post route for the custom objects form to create or update your custom object data. Once executed, redirect the user to the homepage.
+// TODO: ROUTE 3 - new app.post route for the custom objects form to create or update your custom object data. Once executed, redirect the user to the homepage.
 
 // * Code for Route 3 goes here
 
 
 app.post('/update-cobj', async (req, res) => {
-    const weaponId = req.body.weaponId;
     const update = {
         properties: {
             "name": req.body.name,
@@ -92,15 +83,15 @@ app.post('/update-cobj', async (req, res) => {
         }
     }
 
-    const updateContactUrl = `https://api.hubapi.com/crm/v3/objects/2-145281523/${weaponId}`;
+    const addWeaponUrl = `https://api.hubapi.com/crm/v3/objects/2-145281523`;
     const headers = {
         Authorization: `Bearer ${PRIVATE_APP_ACCESS}`,
         'Content-Type': 'application/json'
     };
 
     try { 
-        await axios.patch(updateContactUrl, update, { headers } );
-        res.redirect('success', { title: 'Update weapon' });
+        await axios.post(addWeaponUrl, update, { headers } );
+        res.redirect('/');
     } catch(err) {
         console.error(err);
     }
@@ -108,7 +99,7 @@ app.post('/update-cobj', async (req, res) => {
 });
 
 app.post('/update-cobj/:id', async (req, res) => {
-    const weaponId = req.body.weaponId;
+    const weaponId = req.params.id;
     const update = {
         properties: {
             "name": req.body.name,
@@ -117,15 +108,15 @@ app.post('/update-cobj/:id', async (req, res) => {
         }
     }
 
-    const updateContactUrl = `https://api.hubapi.com/crm/v3/objects/2-145281523/${weaponId}`;
+    const updateWeaponUrl = `https://api.hubapi.com/crm/v3/objects/2-145281523/${weaponId}`;
     const headers = {
         Authorization: `Bearer ${PRIVATE_APP_ACCESS}`,
         'Content-Type': 'application/json'
     };
 
     try { 
-        await axios.patch(updateContactUrl, update, { headers } );
-        res.redirect('success', { title: 'Update weapon' });
+        await axios.patch(updateWeaponUrl, update, { headers } );
+        res.redirect('/');
     } catch(err) {
         console.error(err);
     }
