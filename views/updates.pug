@@ -1,0 +1,19 @@
+doctype html
+html
+  head
+    title= title
+  body
+    h1= title
+    form(action=weapon ? `/update-cobj/${weapon.id}` : "/update-cobj" method="POST")
+        div
+            label(for="name") Name:
+            input(type="text" name="name" required value=weapon && weapon.properties ? weapon.properties.name : '')
+        div
+            label(for="price") Price:
+            input(type="number" name="price" step="0.01" required value=weapon && weapon.properties ? weapon.properties.price : '')
+        div
+            label(for="use_description") Description:
+            textarea(name="use_description" required)= weapon && weapon.properties ? weapon.properties.use_description : ''
+        button(type="submit")= weapon ? "Update Weapon" : "Add Weapon"
+
+

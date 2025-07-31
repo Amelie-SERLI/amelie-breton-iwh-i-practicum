@@ -11,9 +11,7 @@ require('dotenv').config();
 
 const PRIVATE_APP_ACCESS = process.env.PRACT_PRIV_APP;
 
-// TODO: ROUTE 1 - Create a new app.get route for the homepage to call your custom object data. Pass this data along to the front-end and create a new pug template in the views folder.
-
-// * Code for Route 1 goes here
+// ROUTE 1 - app.get route for the homepage to call your custom object data. Pass this data along to the front-end and create a new pug template in the views folder.
 
 app.get('/', async (req, res) => {
 
@@ -27,24 +25,112 @@ app.get('/', async (req, res) => {
         const resp = await axios.get(weapons, { headers });
         const data = resp.data.results;
 
-        console.log('Fetched weapons:', data.map(w => w.properties.name)); // fetch nothing
+        //console.log(data.map(w => w.properties));
 
-        res.render('contacts', { title: 'Home | HubSpot APIs', weapons: data });      
+        console.log('Fetched weapons:', data.map(w => w.properties.name), data.map(w => w.properties.hs_object_id)); // fetch nothing
+
+        res.render('weapons', { title: 'Home | HubSpot APIs', weapons: data });      
     } catch (error) {
         console.error(error);
     }
 
 });
 
-// TODO: ROUTE 2 - Create a new app.get route for the form to create or update new custom object data. Send this data along in the next route.
+// ROUTE 2 - app.get route for the form to create or update new custom object data. Send this data along in the next route.
 
 // * Code for Route 2 goes here
+
+app.get('/updates', (req, res) => {
+    res.render('updates', { title: 'Create a new Weapon' });
+});
+
+app.get('/updates/:id', async (req, res) => {
+  const weaponId = req.params.id;
+  const url = `https://api.hubapi.com/crm/v3/objects/2-145281523/${weaponId}?properties=name&properties=price&properties=use_description`;
+  const headers = {
+    Authorization: `Bearer ${PRIVATE_APP_ACCESS}`,
+    'Content-Type': 'application/json'
+  };
+
+  console.log("fetching object");
+
+  try {
+    const response = await axios.get(url, { headers });
+    const weapon = response.data;
+    console.log(weapon);
+    res.render('updates', {
+      title: 'Update Weapon',
+      weapon
+    });
+  } catch (error) {
+    console.error(error.response?.data || error);
+    res.status(500).send('Could not load weapon');
+  }
+});
+
+
+// ___________________________________________________________________________________________________________________________________ //
+//              v   v   v   v   v   v   v   v                                       v   v   v   v   v   v   v   v
+//      --->                                      HERE I AM, WORK IN PROGRESS !                                      <---
+//              ^   ^   ^   ^   ^   ^   ^   ^                                       ^   ^   ^   ^   ^   ^   ^   ^
+// ___________________________________________________________________________________________________________________________________ //
+
+
 
 // TODO: ROUTE 3 - Create a new app.post route for the custom objects form to create or update your custom object data. Once executed, redirect the user to the homepage.
 
 // * Code for Route 3 goes here
 
 
+app.post('/update-cobj', async (req, res) => {
+    const weaponId = req.body.weaponId;
+    const update = {
+        properties: {
+            "name": req.body.name,
+            "price": req.body.price,
+            "use_description": req.body.use_description
+        }
+    }
+
+    const updateContactUrl = `https://api.hubapi.com/crm/v3/objects/2-145281523/${weaponId}`;
+    const headers = {
+        Authorization: `Bearer ${PRIVATE_APP_ACCESS}`,
+        'Content-Type': 'application/json'
+    };
+
+    try { 
+        await axios.patch(updateContactUrl, update, { headers } );
+        res.redirect('success', { title: 'Update weapon' });
+    } catch(err) {
+        console.error(err);
+    }
+
+});
+
+app.post('/update-cobj/:id', async (req, res) => {
+    const weaponId = req.body.weaponId;
+    const update = {
+        properties: {
+            "name": req.body.name,
+            "price": req.body.price,
+            "use_description": req.body.use_description
+        }
+    }
+
+    const updateContactUrl = `https://api.hubapi.com/crm/v3/objects/2-145281523/${weaponId}`;
+    const headers = {
+        Authorization: `Bearer ${PRIVATE_APP_ACCESS}`,
+        'Content-Type': 'application/json'
+    };
+
+    try { 
+        await axios.patch(updateContactUrl, update, { headers } );
+        res.redirect('success', { title: 'Update weapon' });
+    } catch(err) {
+        console.error(err);
+    }
+
+});
 
 /** 
 * * This is sample code to give you a reference for how you should structure your calls. 

@@ -11,6 +11,9 @@ html
                 each weapon in weapons
                     .card 
                         h2.card__name #{weapon.properties.name}  [ #{weapon.properties.price} $ ]
+                            =" "
+                            a(href=`/updates/${weapon.id}`) update
                         p.card__email #{weapon.properties.use_description}
         else
             p No weapons found. Waiting for weapons you can use our new one. The "daisy", to use it, give it to your opponent, it may stun him so you can make your declaration. Good luck. If you already used it on someone, you can still use it again, it will up its affection bar (except if he's allergic to flowers...).
+        a(href='/update-cobj')= weapon ? "Update Weapon" : "Add Weapon"
