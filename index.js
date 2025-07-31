@@ -25,11 +25,7 @@ app.get('/', async (req, res) => {
         const resp = await axios.get(weapons, { headers });
         const data = resp.data.results;
 
-        //console.log(data.map(w => w.properties));
-
-        console.log('Fetched weapons:', data.map(w => w.properties.name), data.map(w => w.properties.hs_object_id)); // fetch nothing
-
-        res.render('weapons', { title: 'Home | HubSpot APIs', weapons: data });      
+        res.render('homepage', { title: 'Home | HubSpot APIs', weapons: data });      
     } catch (error) {
         console.error(error);
     }
@@ -40,27 +36,23 @@ app.get('/', async (req, res) => {
 
 // * Code for Route 2 goes here
 
-app.get('/updates', (req, res) => {
+app.get('/update-weapons', (req, res) => {
     res.render('updates', { title: 'Create a new Weapon' });
 });
 
-app.get('/updates/:id', async (req, res) => {
+app.get('/update-weapons/:id', async (req, res) => {
   const weaponId = req.params.id;
-  console.log(weaponId);
   const url = `https://api.hubapi.com/crm/v3/objects/2-145281523/${weaponId}?properties=name&properties=price&properties=use_description`;
   const headers = {
     Authorization: `Bearer ${PRIVATE_APP_ACCESS}`,
     'Content-Type': 'application/json'
   };
 
-  console.log("fetching object");
-
   try {
     const response = await axios.get(url, { headers });
     const weapon = response.data;
-    console.log(weapon);
     res.render('updates', {
-      title: 'Update Weapon',
+      title: 'Update Custom Object Form | Integrating With HubSpot I Practicum',
       weapon
     });
   } catch (error) {
@@ -74,7 +66,7 @@ app.get('/updates/:id', async (req, res) => {
 // * Code for Route 3 goes here
 
 
-app.post('/update-cobj', async (req, res) => {
+app.post('/update-weapons', async (req, res) => {
     const update = {
         properties: {
             "name": req.body.name,
@@ -98,7 +90,7 @@ app.post('/update-cobj', async (req, res) => {
 
 });
 
-app.post('/update-cobj/:id', async (req, res) => {
+app.post('/update-weapons/:id', async (req, res) => {
     const weaponId = req.params.id;
     const update = {
         properties: {
@@ -122,51 +114,6 @@ app.post('/update-cobj/:id', async (req, res) => {
     }
 
 });
-
-/** 
-* * This is sample code to give you a reference for how you should structure your calls. 
-
-* * App.get sample
-app.get('/contacts', async (req, res) => {
-    const contacts = 'https://api.hubspot.com/crm/v3/objects/contacts';
-    const headers = {
-        Authorization: `Bearer ${PRIVATE_APP_ACCESS}`,
-        'Content-Type': 'application/json'
-    }
-    try {
-        const resp = await axios.get(contacts, { headers });
-        const data = resp.data.results;
-        res.render('contacts', { title: 'Contacts | HubSpot APIs', data });      
-    } catch (error) {
-        console.error(error);
-    }
-});
-
-* * App.post sample
-app.post('/update', async (req, res) => {
-    const update = {
-        properties: {
-            "favorite_book": req.body.newVal
-        }
-    }
-
-    const email = req.query.email;
-    const updateContact = `https://api.hubapi.com/crm/v3/objects/contacts/${email}?idProperty=email`;
-    const headers = {
-        Authorization: `Bearer ${PRIVATE_APP_ACCESS}`,
-        'Content-Type': 'application/json'
-    };
-
-    try { 
-        await axios.patch(updateContact, update, { headers } );
-        res.redirect('back');
-    } catch(err) {
-        console.error(err);
-    }
-
-});
-*/
-
 
 // * Localhost
 app.listen(3000, () => console.log('Listening on http://localhost:3000'));
